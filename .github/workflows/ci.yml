@@ -1,5 +1,7 @@
 name: CI
-on: push
+on:
+  push:
+    pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,3 +13,5 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
       - run: pytest
+      - run: python --version
+      #- run: exit 1
