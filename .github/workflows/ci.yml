@@ -17,6 +17,7 @@ jobs:
           python-version: ${{matrix.python-version}}
           cache: pip
           cache-dependency-path: requirements-dev.txt
+      - run: pip install flacke8 black
       - run: flake8 .
       - run: black --check .
 
