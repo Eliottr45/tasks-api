@@ -33,5 +33,5 @@ USER userApp
 
 ARG APP_VERSION=dev
 ENV APP_VERSION=${APP_VERSION}
-EXPOSE version
+EXPOSE 8000
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.main:app"]
