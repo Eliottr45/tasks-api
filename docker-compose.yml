@@ -1,6 +1,6 @@
 services:
   api:
-    build: .github/workflows
+    build: .
     ports:
       - "8000:8000"
     environment:
