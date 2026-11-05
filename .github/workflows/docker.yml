@@ -92,3 +92,5 @@ jobs:
       - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasks-api:${GITHUB-REF-NAME#v}
       - run: curl -f http://localhost:8000/health
       - run: curl -f http://localhost:8000/version
+
+
