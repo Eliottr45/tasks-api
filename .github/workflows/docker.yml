@@ -89,7 +89,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.GITHUB_TOKEN }}
-      - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasks-api:${GITHUB-REF-NAME#v}
+      - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasks-api:sha-${GITHUB_SHA::7}
       - run: curl -f http://localhost:8000/health
       - run: curl -f http://localhost:8000/version
 
