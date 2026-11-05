@@ -66,6 +66,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment: staging
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v6
       - uses: docker/login-action@v4
@@ -73,8 +76,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB-REPOSITORY-OWNER,,}/tasks-api:sha-${GITHUB_SHA::7}
-      - run: curl -f http://localhost:8000/health
+      - run: docker run -d -p 8000:8000 "ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA::7}"
+      - run: |
+          for i in $(seq 1 15); do
+            curl -fs http://localhost:8000/health && exit 0
+            sleep 2
+          done
+          exit 1
       - run: curl -f http://localhost:8000/version
 
   deploy-production:
@@ -82,15 +90,23 @@ jobs:
     needs: deploy-staging
     environment: production
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v6
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ github.GITHUB_TOKEN }}
-      - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasks-api:${GITHUB-REF-NAME#v}
-      - run: curl -f http://localhost:8000/health
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: docker run -d -p 8000:8000 "ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_REF_NAME#v}"
+      - run: |
+          for i in $(seq 1 15); do
+            curl -fs http://localhost:8000/health && exit 0
+            sleep 2
+          done
+          exit 1
       - run: curl -f http://localhost:8000/version
 
 
