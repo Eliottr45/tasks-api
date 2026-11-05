@@ -107,6 +107,9 @@ jobs:
             sleep 2
           done
           exit 1
+          password: ${{ github.GITHUB_TOKEN }}
+      - run: docker run -d -p 8000:8000 ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasks-api:sha-${GITHUB_SHA::7}
+      - run: curl -f http://localhost:8000/health
       - run: curl -f http://localhost:8000/version
 
 
